@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hasura
+
+commonLabels:
+  app.kubernetes.io/name: hasura
+
+bases:
+  - ../base/
+
+patchesStrategicMerge:
+  - patches/deployment.yaml
+
+images:
+  - name: postgres
+    newTag: sha256:c32f3f8364d79f71958c9ada74c43c2033d7e13d9d5fc21d3ba89322e6559c9d

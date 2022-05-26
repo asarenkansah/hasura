@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres@sha256:c32f3f8364d79f71958c9ada74c43c2033d7e13d9d5fc21d3ba89322e6559c9d
+    ports: [5432:5432]
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes: [postgres-data:/var/lib/postgresql/data]
+
+  hasura:
+    build:
+      context: .
+      target: server
+    depends_on: [postgres]
+    ports: [8080:8080]
+    restart: unless-stopped
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
+
+  console:
+    build:
+      context: .
+      target: console
+    depends_on: [hasura]
+    ports: [9693:9693, 9695:9695]
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: .
+        target: /hasura/
+        consistency: delegated
+    working_dir: /hasura/
+
+volumes:
+  postgres-data: {}

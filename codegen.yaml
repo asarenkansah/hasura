@@ -1,0 +1,26 @@
+config:
+  commentDescriptions: true
+  minify: true
+
+generates:
+  # Schemas for admin role
+  schemas/admin/schema.json:
+    schema: &schema_admin
+      - http://localhost:8080/v1/graphql:
+          headers:
+            X-Hasura-Role: admin
+    plugins: [introspection]
+  schemas/admin/schema.graphql:
+    schema: *schema_admin
+    plugins: [schema-ast]
+
+  # Schemas for user role
+  schemas/user/schema.json:
+    schema: &schema_user
+      - http://localhost:8080/v1/graphql:
+          headers:
+            X-Hasura-Role: user
+    plugins: [introspection]
+  schemas/user/schema.graphql:
+    schema: *schema_user
+    plugins: [schema-ast]
